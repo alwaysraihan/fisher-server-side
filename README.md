@@ -1,6 +1,6 @@
 # Fisher SERVER SIDE
 
-g## Technology
+## Technology
 
 -   monogDB
 -   Json Web Token
