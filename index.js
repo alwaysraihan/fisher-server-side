@@ -84,11 +84,9 @@ const run = async () => {
 
         /* Admin section
         1. get admin
-        2. put admin
-        
         */
 
-        // get  admin
+        // 1. get  admin
 
         app.get("/admin/:employeeID", async (req, res) => {
             const employeeID = req.params.employeeID;
@@ -99,7 +97,11 @@ const run = async () => {
             const isAdmin = admin?.role === "admin";
             res.send({ admin: isAdmin });
         });
-
+        /* My profile Route
+        1. get my profile
+       
+       
+        */
         app.get("/my-profile", async (req, res) => {
             const email = req.query.email;
 
@@ -111,52 +113,45 @@ const run = async () => {
                 return res.send({ message: "Data not found" });
             }
         });
-        app.put("/user/:email", async (req, res) => {
-            const email = req.params.email;
-            const user = req.body;
-            const filter = { email: email };
-            const options = { upsert: true };
-            const updateDoc = {
-                $set: user,
-            };
-            const result = await UserCollections.updateOne(
-                filter,
-                updateDoc,
-                options
-            );
-            const token = jwt.sign(
-                { email: email },
-                process.env.ACCESS_TOKEN_SECRET,
-                { expiresIn: "30d" }
-            );
-            res.send({ result, token });
-        });
-
+        /* Rivew Route 
+        1. get Riviews
+        2.post Rivew
+        */
+        //    1. get rivews
         app.get("/rivews", async (req, res) => {
             const qurey = {};
             const cursor = ReivewsCollection.find(qurey);
             const rivew = await cursor.toArray();
             res.send(rivew);
         });
+        // 2. post rivews
         app.post("/rivews", async (req, res) => {
             const rivew = req.body;
             const result = await ReivewsCollection.insertOne(rivew);
             res.send({ success: true, result });
         });
+        /* Task Route 
+        1. get all Task
+        2.post new Task
+        3.get task by formated date 
+        4. get assined task
+        5. patch task update
+        */
 
-        //    task route
+        //  1.  get all task
         app.get("/task", async (req, res) => {
             const qurey = {};
             const cursor = TaskCollection.find(qurey);
             const tasks = await cursor.toArray();
             res.send(tasks);
         });
+        // 2. post new task
         app.post("/task", async (req, res) => {
             const Task = req.body;
             const result = await TaskCollection.insertOne(Task);
             res.send({ success: true, result });
         });
-
+        // 3. get task by formated date
         app.get("/all-tasks/:formattedDate", async (req, res) => {
             const date = req.params.formattedDate;
             const query = { date: date };
@@ -170,7 +165,7 @@ const run = async () => {
                 });
             }
         });
-
+        // 4. get assigned tasks
         app.get("/assigned-tasks/:employeeID", async (req, res) => {
             const employeeID = req.params.employeeID;
             const query = { employeeID: employeeID };
@@ -185,6 +180,7 @@ const run = async () => {
                 });
             }
         });
+        // 5. task updated
         app.patch("/task-update/:id", async (req, res) => {
             const id = req.params.id;
 
@@ -240,8 +236,12 @@ const run = async () => {
                 res.status(204).send({ error: "something went worng" });
             }
         });
-
-        // Attendance
+        /* Attendance Route 
+        1. get Attendace
+        2.put Attendance
+    
+        */
+        // 1. get Attendance
         app.get("/attendance/:formattedDate", async (req, res) => {
             const date = req.params.formattedDate;
             const query = { date: date };
@@ -255,7 +255,7 @@ const run = async () => {
                 });
             }
         });
-        // put attendance
+        // 2. put attendance
         app.put("/attendance/:id", async (req, res) => {
             const id = req.params.id;
             const date = req.body.date;
